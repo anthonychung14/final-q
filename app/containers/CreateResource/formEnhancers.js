@@ -29,6 +29,12 @@ const connectCreateResource = compose(
       if (reportType === 'incident') {
         const storageDate = getStorageDate();
         await firebase.push(`${form}/${storageDate}`, values);
+
+        await firebase.push('/notifications', {
+          user: 'Anthony Chung',
+          message: 'What is really good',
+          // userProfileImg: FIREBASE_AUTH.currentUser.photoURL,
+        });
       } else {
         await postResource({ resourceType, values: withGifVals });
       }
@@ -39,7 +45,7 @@ const connectCreateResource = compose(
         reset();
       }
     },
-  }),
+  })
 );
 
 const withSubmitResources = withHandlers({
@@ -80,7 +86,7 @@ const withSubmitResources = withHandlers({
           gramsProtein,
           caloriesAtwater,
           ingredient,
-        }),
+        })
       )
       .map(mapKeysToSnake);
 
@@ -142,7 +148,7 @@ export const withOnSubmit = compose(
   connectAuth,
   withLoading,
   withSubmitResources,
-  connectCreateResource,
+  connectCreateResource
   // branch(
   //   props => props.reportType === 'incident',
   // ),
