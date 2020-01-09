@@ -60,7 +60,7 @@ module.exports = require('./webpack.base.babel')({
           test: /[\\/]node_modules[\\/]/,
           name(module) {
             const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
             )[1];
             return `npm.${packageName.replace('@', '')}`;
           },
@@ -127,8 +127,8 @@ module.exports = require('./webpack.base.babel')({
     }),
 
     new WebpackPwaManifest({
-      name: 'Provisor',
-      short_name: 'Provisor',
+      name: 'Centinel',
+      short_name: 'Centinel',
       description: 'A security service solution',
       background_color: '#fafafa',
       theme_color: '#b1624d',

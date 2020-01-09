@@ -75,7 +75,7 @@ const AddCardForm = ({
 
   const [numberFields, nonNumberFields] = _.partition(
     otherFields,
-    f => f.type === 'integer' || f.type === 'phoneNumber',
+    f => f.type === 'integer' || f.type === 'phoneNumber'
   );
 
   // TODO filter on area + check box
@@ -99,16 +99,14 @@ const AddCardForm = ({
 
           <WhiteSpace size="lg" />
 
-          {hasAllVals && (
-            <Button
-              type="submit"
-              loading={processing}
-              icon="check-circle-o"
-              handleClick={onSubmit}
-              text={submitLabel || 'Submit'}
-              disabled={processing || invalid}
-            />
-          )}
+          <Button
+            type="submit"
+            loading={processing}
+            icon="check-circle-o"
+            handleClick={onSubmit}
+            text={submitLabel || 'Submit'}
+            disabled={processing || invalid}
+          />
         </fieldset>
       </form>
       {/* {firstMediaField && (
@@ -135,14 +133,14 @@ const DynamicForm = branch(
         'supplier',
         'producer',
         'serving_unit',
-        'food_type',
+        'food_type'
       ),
       numberValues: selector(
         state,
-        ...fields.filter(i => i.type === 'integer').map(i => i.name),
+        ...fields.filter(i => i.type === 'integer').map(i => i.name)
       ),
-    })),
-  ),
+    }))
+  )
 )(AddCardForm);
 
 class Form extends React.Component<Props> {
@@ -217,5 +215,5 @@ export default compose(
     makeRenderFieldHeader: () => name => (
       <label>{_.startCase(_.toLower(name))}</label>
     ),
-  }),
+  })
 )(Form);

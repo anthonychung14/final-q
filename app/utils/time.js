@@ -18,7 +18,7 @@ export const convertToUnixFromDate = string => {
 
 export const formatUnixTimestamp = (
   timestamp: number,
-  format?: string,
+  format?: string
 ): string => {
   switch (format) {
     case 'from_now':
@@ -35,8 +35,6 @@ export const formatUnixTimestamp = (
       return moment.unix(timestamp).format('M/DD/YY, h:mm:ss a');
     case 'wordy':
       return moment.unix(timestamp).format('MMMM Do, YYYY');
-    case 'x_axis':
-      return moment.unix(timestamp).format('M/DD/YY');
     case 'day':
       return moment.unix(timestamp, 'YYYY-MM-DD HH:mm:ss');
     // case 'date_with_seconds':
@@ -61,7 +59,7 @@ export const getStoragePath = () => convertDateToPath(getStorageDate());
 export const getStorageDate = item =>
   formatUnixTimestamp(
     _.get(item, 'date_created_timestamp', currentTimeSeconds()),
-    'storage_date',
+    'storage_date'
   );
 
 export const getDayFromDate = date => {

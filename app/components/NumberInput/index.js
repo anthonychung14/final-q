@@ -10,8 +10,10 @@ const Outer = styled(TouchableOpacity)`
   display: flex;
   flex: 1;
   height: 100%;
-  background-color: ${({ input, startedInput, highlight }) => {
+  background-color: ${({ input, startedInput, highlight, meta }) => {
     if (highlight) return COLORS.lightWhite;
+    if (meta.invalid && meta.dirty) return COLORS.buttonTypes.cancel;
+
     return !startedInput && input && typeof input.value === 'number'
       ? COLORS.lightBlue
       : '';
@@ -68,6 +70,7 @@ class NumberInput extends React.Component {
       startedInput,
       type,
       renderHeader,
+      meta,
     } = this.props;
 
     if (!type && !startedInput) return null;
@@ -76,6 +79,7 @@ class NumberInput extends React.Component {
       <Outer
         onPress={this.handlePress}
         input={input}
+        meta={meta}
         startedInput={startedInput}
         highlight={fieldName && startedInput}
       >

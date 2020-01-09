@@ -6,7 +6,7 @@ import { compose, withProps } from 'recompose';
 import CARDS from 'constants/cards';
 import COLORS from 'constants/colors';
 
-import { getFirebase, getTodayConsumed } from 'selectors/firebase';
+import { getFirebase } from 'selectors/firebase';
 import { getStorageDate } from 'utils/time';
 
 export const getActiveMode = state => state.getIn(['skillMode', 'activeMode']);
@@ -24,7 +24,7 @@ export const connectActiveMode = connect(state => ({
 
 export const connectActiveSegmentProps = compose(
   connectActiveMode,
-  withCardValuesForMode,
+  withCardValuesForMode
 );
 
 export const getActiveModeData = createSelector(
@@ -34,7 +34,7 @@ export const getActiveModeData = createSelector(
     cartConfirming,
     tintColor: _.get(COLORS, ['modes', activeMode, 'secondary']),
     values: _.get(CARDS, activeMode, []),
-  }),
+  })
 );
 
 export const getConsumePath = state => {
@@ -72,7 +72,7 @@ export const withNutritionRemaining = compose(
 
         return acc + _.get(value, lookup);
       },
-      0,
+      0
     );
 
     const totalInCart = cart.reduce((acc, curr) => {
@@ -90,5 +90,5 @@ export const withNutritionRemaining = compose(
         activeGoal.get(subgoal, goalCalories) - totalThusFar - totalInCart,
       unit: subgoal === 'calories' ? 'cal' : 'g',
     };
-  }),
+  })
 );

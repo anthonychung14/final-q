@@ -8,13 +8,6 @@
 const RESOURCE_TYPE = 'emergency';
 const FIELDS = [
   {
-    name: 'location',
-    type: 'checkbox',
-    values: ['lobby', 'elevator', 'parking garage', 'hallways', 'package room'],
-    label: 'location',
-    required: true,
-  },
-  {
     name: 'media',
     type: 'media',
     label: 'a helpful picture',

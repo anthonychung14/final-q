@@ -13,10 +13,10 @@ import { withState, compose } from 'recompose';
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 
-import NutritionPage from 'containers/pages/NutritionPage/loadable';
+import ReportIncident from 'containers/ReportIncident/Loadable';
 import TrackPage from 'containers/pages/TrackPage/loadable';
 import AboutPage from 'containers/pages/AboutPage/loadable';
-import AddCards from 'containers/AddCards/loadable';
+import RegisterUnit from 'containers/pages/RegisterUnit/loadable';
 
 import Login from 'components/Login';
 import AppBar from 'components/AppBar';
@@ -31,25 +31,25 @@ import GlobalStyle from '../../global-styles';
 const withToggleOpenState = withState(
   'drawerOpen',
   'handleDrawerToggle',
-  false,
+  false
 );
 
 const MAP = {
   about: {
-    headerText: '',
+    headerText: 'About Centinel',
     Component: AboutPage,
   },
-  consume: {
-    headerText: '',
-    Component: NutritionPage,
-  },
-  acquire: {
-    headerText: '',
-    Component: AddCards,
-  },
   track: {
-    headerText: 'Progress Today',
+    headerText: 'Track Incidents',
     Component: TrackPage,
+  },
+  report: {
+    headerText: 'Report an Incident',
+    Component: ReportIncident,
+  },
+  register: {
+    headerText: 'Register',
+    Component: RegisterUnit,
   },
 };
 
@@ -61,11 +61,13 @@ const PageDisplayer = ({ activeMode, auth, firebase }) => {
   const { headerText, Component } = getProps(activeMode);
 
   return (
-    <Container type="page" headerText={headerText}>
+    <Container type="empty">
       {isLoaded(auth) && isEmpty(auth) ? (
         <Login firebase={firebase} />
       ) : (
-        <Component />
+        <Container type="page" headerText={headerText}>
+          <Component />
+        </Container>
       )}
     </Container>
   );
@@ -74,7 +76,7 @@ const PageDisplayer = ({ activeMode, auth, firebase }) => {
 const PageContainer = compose(
   firebaseConnect(),
   connect(state => ({ auth: getAuth(state) })),
-  connectActiveMode,
+  connectActiveMode
 )(PageDisplayer);
 
 const Body = drawerProps => (
@@ -92,7 +94,7 @@ const BodyWithDrawer = withToggleOpenState(Body);
 export default function App() {
   return (
     <div>
-      <Helmet titleTemplate="%s - Provisor" defaultTitle="Provisor">
+      <Helmet titleTemplate="%s - Centinel" defaultTitle="Centinel">
         <meta name="description" content="Automate Nutrition" />
       </Helmet>
       <BodyWithDrawer />

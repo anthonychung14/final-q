@@ -7,9 +7,7 @@ import React from 'react';
 import { compose } from 'recompose';
 
 import { SegmentedControl } from 'antd-mobile';
-
 import Container from 'components/Container';
-// import TabBar from 'components/TabBar';
 
 import { connectActiveSegmentProps } from 'selectors/skill_mode';
 import { withSegmentState } from 'utils/enhancers';
@@ -40,7 +38,7 @@ const ReportIncidentComponent = ({
 
 const Enhanced = compose(
   connectActiveSegmentProps,
-  withSegmentState,
+  withSegmentState
 );
 
 const ReportIncident = Enhanced(ReportIncidentComponent);

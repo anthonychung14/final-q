@@ -8,6 +8,7 @@ import theft from './theft';
 import intrusion from './intrusion';
 import emergency from './emergency';
 import foodItem from './foodItem';
+import userFob from './userFob';
 import measurement from './measurement';
 
 const apiKey = 'keyXl84W0rtRUuOEV';
@@ -27,4 +28,5 @@ export default {
   meal,
   measurement,
   textSource,
+  userFob,
 };

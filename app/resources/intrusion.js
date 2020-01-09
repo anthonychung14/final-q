@@ -10,13 +10,7 @@ const FIELDS = [
   {
     name: 'location',
     type: 'checkbox',
-    values: [
-      'lobby',
-      'elevator',
-      'freight elevator',
-      'parking garage',
-      'hallways',
-    ],
+    values: ['lobby', 'elevator', 'freight elevator', 'parking garage'],
     label: 'location',
     required: true,
   },

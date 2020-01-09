@@ -13,13 +13,11 @@ import { connectActiveSegmentProps } from 'selectors/skill_mode';
 const withSegmentState = compose(
   withState('activeIndex', 'updateIndex', 0),
   withHandlers({
-    // onValueChange: ({ updateIndex }) => value => {
-    //   updateIndex(value)
-    // },
     handleSegmentChange: ({ updateIndex }) => e => {
+      // might need to change the incident type
       updateIndex(e.nativeEvent.selectedSegmentIndex);
     },
-  }),
+  })
 );
 
 const TabBarComponent = ({
@@ -42,7 +40,7 @@ const TabBarComponent = ({
 
 const withModeSegmentProps = compose(
   connectActiveSegmentProps,
-  withSegmentState,
+  withSegmentState
 );
 
 const TabBar = withModeSegmentProps(TabBarComponent);

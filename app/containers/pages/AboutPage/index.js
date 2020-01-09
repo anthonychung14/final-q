@@ -32,9 +32,8 @@ const AboutPage = () => (
         >
           <Container padded style={{ flexDirection: 'column' }}>
             <Text>
-              Provisor makes it easy to track and add custom food as items and
-              composite items. Over time, it will suggest foods that fit your
-              preferences + macros
+              Use this tool to report security incidents and register your unit
+              and FOBs.
             </Text>
           </Container>
         </Container>

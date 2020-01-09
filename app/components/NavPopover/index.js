@@ -1,16 +1,10 @@
 import React from 'react';
 import { firebaseConnect } from 'react-redux-firebase';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
 
 import { TouchableOpacity } from 'react-native';
 import { Popover, Icon } from 'antd-mobile';
-
-const myImg = src => (
-  <img
-    src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`}
-    className="am-icon am-icon-xs"
-    alt=""
-  />
-);
 
 class NavPopover extends React.Component {
   state = {
@@ -33,7 +27,7 @@ class NavPopover extends React.Component {
   };
 
   render() {
-    const { firebase } = this.props;
+    const { firebase, dispatch } = this.props;
 
     return (
       <Popover
@@ -41,19 +35,24 @@ class NavPopover extends React.Component {
         overlayStyle={{ color: 'currentColor' }}
         visible={this.state.visible}
         overlay={[
-          <TouchableOpacity key="1" onPress={() => firebase.logout()}>
-            <Popover.Item key="1" value="view" style={{ whiteSpace: 'nowrap' }}>
-              <h4>Logout</h4>
-            </Popover.Item>
-          </TouchableOpacity>,
-          <TouchableOpacity key="5" onPress={() => console.log('do thing')}>
+          <TouchableOpacity
+            key="5"
+            onPress={() =>
+              dispatch({ type: 'mode/SWITCH', payload: { mode: 'register' } })
+            }
+          >
             <Popover.Item
               value="view"
               key="5"
               // icon={myImg('PKAgAqZWJVNwKsAJSmXd')}
               style={{ whiteSpace: 'nowrap' }}
             >
-              <h4>Donate</h4>
+              <h4>Register</h4>
+            </Popover.Item>
+          </TouchableOpacity>,
+          <TouchableOpacity key="1" onPress={() => firebase.logout()}>
+            <Popover.Item key="1" value="view" style={{ whiteSpace: 'nowrap' }}>
+              <h4>Logout</h4>
             </Popover.Item>
           </TouchableOpacity>,
         ]}
@@ -81,4 +80,7 @@ class NavPopover extends React.Component {
   }
 }
 
-export default firebaseConnect()(NavPopover);
+export default compose(
+  connect(null),
+  firebaseConnect()
+)(NavPopover);

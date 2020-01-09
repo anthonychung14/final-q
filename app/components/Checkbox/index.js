@@ -30,7 +30,7 @@ const Checkbox = ({ checked, checkboxValues, handleCheck, name }) => {
     <WingBlank size="md">
       <WhiteSpace size="md" />
       <List renderHeader={() => name}>
-        <Container type="empty" horizontal>
+        <Container type="empty">
           {checkboxValues.map(item => (
             <CheckboxItem
               key={`${item.label}-i`}
@@ -63,5 +63,5 @@ export default compose(
       const { handleCheck, checkboxValues } = this.props;
       handleCheck(_.first(checkboxValues));
     },
-  }),
+  })
 )(Checkbox);

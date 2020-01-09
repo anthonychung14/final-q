@@ -12,14 +12,7 @@ const FIELDS = [
     displayName: 'deliverer',
     type: 'checkbox',
     label: 'Delivery Carrier',
-    values: ['Amazon', 'UPS', 'FedEx', 'Other / Unknown'],
-    required: true,
-  },
-  {
-    name: 'unit_number',
-    displayName: '#',
-    type: 'integer',
-    label: 'Unit number affected',
+    values: ['Amazon', 'UPS', 'FedEx', 'Other'],
     required: true,
   },
   {

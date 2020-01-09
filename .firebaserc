@@ -1,6 +1,5 @@
 {
   "projects": {
-    "default": "provisor-0-1",
-    "staging": "provisor-0-1"
+    "default": "centinel-01"
   }
 }

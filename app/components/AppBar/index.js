@@ -31,7 +31,7 @@ const AppBar = ({
     ]}
   >
     <NavLink style={{ color: 'white' }} exact key="home" to="/">
-      Provisor 0-1
+      Centinel 0-2
     </NavLink>
   </NavBar>
 );
@@ -42,7 +42,7 @@ export default compose(
     navBarStyle: {
       backgroundColor: _.get(COLORS, [
         'modes',
-        _.has(COLORS, ['modes', activeMode]) ? activeMode : 'consume',
+        _.has(COLORS, ['modes', activeMode]) ? activeMode : 'security',
         'primary',
       ]),
       borderBottom: `4px solid ${_.get(COLORS, [
@@ -54,5 +54,5 @@ export default compose(
       width: '100%',
       zIndex: 4,
     },
-  })),
+  }))
 )(AppBar);

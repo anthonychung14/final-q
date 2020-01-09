@@ -12,59 +12,27 @@ import _ from 'lodash';
 import React from 'react';
 import { Chart } from 'react-charts';
 import { useSelector } from 'react-redux';
+import { useFirebaseConnect, useFirebase } from 'react-redux-firebase';
 
 import Container from 'components/Container';
 import Button from 'components/Button';
 
-import { NutritionTable } from 'containers/widgets';
-
-// TODO: nutrition specific selectors must be moved into their own module
-import { getNutritionConsumed } from 'selectors/firebase';
 import {
-  convertToUnixFromDate,
   currentTimeSeconds,
   formatUnixTimestamp,
   convertDateToPath,
 } from 'utils/time';
 
-const makeDataFromList = list => {
-  const numCounted = _.countBy(list, i =>
-    formatUnixTimestamp(i.value.reported_seconds, 'x_axis'),
-  );
-  return _.map(numCounted, (v, k) => ({
-    x: new Date(convertToUnixFromDate(k) * 1000),
-    y: v,
-  }));
+const INCIDENT_COLORS = {
+  emergency: 'red',
+  theft: 'yellow',
+  intrusion: 'blue',
 };
-
-const totalForMacroInDate = (date, consumedOnDate, macro) =>
-  _.reduce(
-    consumedOnDate,
-    (acc, curr) => {
-      const next = acc + _.get(curr, `grams_${macro}`);
-      return next;
-    },
-    0,
-  );
-
-const getConsumedFromDate = (date, object) =>
-  _.defaultTo(_.get(object, `2020.${convertDateToPath(date)}`), {});
 
 export const getStoragePathFromItem = item =>
   convertDateToPath(
-    formatUnixTimestamp(item.date_created_timestamp, 'storage_date'),
+    formatUnixTimestamp(item.date_created_timestamp, 'storage_date')
   );
-
-const makeMacroSummaries = (date, object) => {
-  // { 2020: { 1: { 04: { stuff, stuff, stuff } } } }
-
-  const consumedOnDate = getConsumedFromDate(date, object);
-
-  return ['protein', 'fat', 'carb'].map(m => ({
-    x: m,
-    y: totalForMacroInDate(date, consumedOnDate, m),
-  }));
-};
 
 const makeDatesFromPastWeek = () =>
   new Array(7)
@@ -72,77 +40,97 @@ const makeDatesFromPastWeek = () =>
     .map((_, idx) =>
       formatUnixTimestamp(
         currentTimeSeconds() - (7 + idx * 24 * 60 * 60),
-        'shorter_date',
-      ),
+        'shorter_date'
+      )
     )
     .reduce((acc, date) => {
       acc[date] = [];
       return acc;
     }, {});
 
-const makeMacrosForWeek = (object, m, dates) => {
-  //
+const getDateFromIncident = i =>
+  formatUnixTimestamp(i.value.reported_seconds, 'shorter_date');
+
+const getIncidentsForDate = (incidents, date) =>
+  _.filter(incidents, i => getDateFromIncident(i) === date).length;
+
+const makeIncidentSummaries = (incidents, date) => {
+  const incidentMap = _.groupBy(incidents, 'value.type');
 
   // for each date, return a total where
+  return _.map(incidentMap, (i, type) => ({
+    x: type,
+    y: getIncidentsForDate(i, date),
+  }));
+};
+
+const makeIncidentsForWeek = (obj, type, dates) => {
   return _.keys(dates).map(date => {
-    const consumedOnDate = getConsumedFromDate(date, object);
     return {
       x: date,
-      y: totalForMacroInDate(date, consumedOnDate, m),
+      y: _.filter(
+        obj,
+        i => i.value.type === type && getDateFromIncident(i) === date
+      ).length,
     };
   });
 };
 
-// splits data so that secondary axes is macros + histogram of dates
-const makeDataByDay = object => {
+const makeHistogramOfIncidents = object => {
   const dates = makeDatesFromPastWeek();
-  return _.map(dates, (currArr, shorterDateKey) => ({
-    label: shorterDateKey,
-    datums: currArr.concat(makeMacroSummaries(shorterDateKey, object)),
+  const incidentMap = _.groupBy(object, 'value.type');
+
+  return _.map(incidentMap, (incident, type) => ({
+    label: type,
+    datums: makeIncidentsForWeek(object, type, dates),
   }));
 };
 
-// splits data so that secondary is dates, histogram of macros
-const makeHistogramOfMacros = object => {
+const makeIncidentsByDay = incidents => {
   const dates = makeDatesFromPastWeek();
-  return ['protein', 'fat', 'carb'].map(m => ({
-    label: m,
-    datums: makeMacrosForWeek(object, m, dates),
+  return _.map(dates, (listValues, date) => ({
+    label: date,
+    datums: makeIncidentSummaries(incidents, date),
   }));
 };
 
 const TrackPage = () => {
-  const [isOn, toggleView] = React.useState(false);
-
   const series = React.useMemo(
     () => ({
       type: 'bar',
     }),
-    [],
+    []
   );
   const axes = React.useMemo(
     () => [
       { primary: true, type: 'ordinal', position: 'left' },
       { position: 'bottom', type: 'linear', stacked: true },
     ],
-    [],
+    []
   );
+  useFirebaseConnect('incident');
 
-  const userConsumeMap = useSelector(getNutritionConsumed);
+  const [isOn, toggleView] = React.useState(false);
+  const incidents = useSelector(state => {
+    return state.get('firebase').ordered.incident;
+  });
+
   const data = React.useMemo(
-    () =>
-      isOn
-        ? makeHistogramOfMacros(userConsumeMap)
-        : makeDataByDay(userConsumeMap),
-    [userConsumeMap, isOn],
-  );
+    () => {
+      if (incidents) {
+        return isOn
+          ? makeIncidentsByDay(incidents)
+          : makeHistogramOfIncidents(incidents);
+      }
 
+      return [];
+    },
+    [incidents, isOn]
+  );
   return (
     <Container type="empty">
-      <Container padded style={{ height: '300px', width: '100%' }}>
-        <NutritionTable />
-
-        {Object.keys(userConsumeMap).length > 0 ? (
+      {incidents && data.length > 0 ? (
+        <Container padded style={{ height: '300px', width: '100%' }}>
           <Chart
             data={data}
             series={series}
@@ -150,16 +138,16 @@ const TrackPage = () => {
             tooltip
             getSeriesStyle={s => ({ color: s.originalSeries.color })}
           />
-        ) : null}
-        <Container horizontal end>
-          <Button
-            handleClick={() => toggleView(!isOn)}
-            width="25%"
-            text={isOn ? 'Macro' : 'Week'}
-            type={isOn ? 'secondary' : 'cancel'}
-          />
+          <Container horizontal end>
+            <Button
+              handleClick={() => toggleView(!isOn)}
+              width="25%"
+              text={isOn ? 'Type' : 'Day'}
+              type={isOn ? 'secondary' : 'cancel'}
+            />
+          </Container>
         </Container>
-      </Container>
+      ) : null}
     </Container>
   );
 };
